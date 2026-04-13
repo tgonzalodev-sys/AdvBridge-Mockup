@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACB — Prototipo UX</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 min-h-screen flex items-center justify-center font-sans">
+<div class="max-w-3xl w-full mx-auto px-6 py-12">
+
+  <div class="text-center mb-10">
+    <div class="inline-flex items-center gap-2 bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full mb-4">PROTOTIPO UX · Solo mockup</div>
+    <h1 class="text-3xl font-bold text-white">AdvertMind Commercial Bridge</h1>
+    <p class="text-slate-400 mt-2 text-sm">Prototipo de validación UX/UI · Sin backend · Datos ficticios</p>
+  </div>
+
+  <div class="grid grid-cols-2 gap-4">
+
+    <!-- Clientes -->
+    <div class="bg-slate-800 rounded-2xl p-5 border border-slate-700">
+      <div class="flex items-center gap-2 mb-3">
+        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+          <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        </div>
+        <h2 class="text-white font-semibold">Clientes</h2>
+      </div>
+      <p class="text-slate-400 text-xs mb-4">Jerarquía Grupo → Madre → Hija. Filtros, búsqueda, estados, historial.</p>
+      <div class="space-y-2">
+        <a href="clientes.html" class="flex items-center justify-between px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm text-slate-200 transition-colors">
+          <span>Lista de clientes</span>
+          <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="cliente-detalle.html" class="flex items-center justify-between px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm text-slate-200 transition-colors">
+          <span>Detalle Madre + Hijas + Historial</span>
+          <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Productos -->
+    <div class="bg-slate-800 rounded-2xl p-5 border border-slate-700">
+      <div class="flex items-center gap-2 mb-3">
+        <div class="w-8 h-8 bg-violet-600 rounded-lg flex items-center justify-center">
+          <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+        </div>
+        <h2 class="text-white font-semibold">Productos</h2>
+      </div>
+      <p class="text-slate-400 text-xs mb-4">Catálogo unificado. Flags, versiones, disponibilidad, restricciones.</p>
+      <div class="space-y-2">
+        <a href="productos.html" class="flex items-center justify-between px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm text-slate-200 transition-colors">
+          <span>Catálogo de productos</span>
+          <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Contratos -->
+    <div class="bg-slate-800 rounded-2xl p-5 border border-slate-700">
+      <div class="flex items-center gap-2 mb-3">
+        <div class="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
+          <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        </div>
+        <h2 class="text-white font-semibold">Contratos</h2>
+      </div>
+      <p class="text-slate-400 text-xs mb-4">Wizard 4 pasos, líneas de producto, descuentos en cascada, reemplazo.</p>
+      <div class="space-y-2">
+        <a href="contratos.html" class="flex items-center justify-between px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm text-slate-200 transition-colors">
+          <span>Lista de contratos</span>
+          <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="contrato-nuevo.html" class="flex items-center justify-between px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm text-slate-200 transition-colors">
+          <span>Wizard nuevo contrato (4 pasos)</span>
+          <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="contrato-detalle.html" class="flex items-center justify-between px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm text-slate-200 transition-colors">
+          <span>Detalle contrato + descuentos + licencias</span>
+          <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Facturación -->
+    <div class="bg-slate-800 rounded-2xl p-5 border border-slate-700">
+      <div class="flex items-center gap-2 mb-3">
+        <div class="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center">
+          <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+        </div>
+        <h2 class="text-white font-semibold">Facturación</h2>
+      </div>
+      <p class="text-slate-400 text-xs mb-4">Matriz anual. Estados de celda. Drawer mensual. Bloqueos. Conceptos manuales.</p>
+      <div class="space-y-2">
+        <a href="facturacion.html" class="flex items-center justify-between px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm text-slate-200 transition-colors">
+          <span>Matriz de facturación</span>
+          <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Flujos clave -->
+  <div class="mt-6 bg-slate-800 rounded-2xl p-5 border border-slate-700">
+    <h2 class="text-white font-semibold mb-3">Flujos clave a validar</h2>
+    <div class="grid grid-cols-2 gap-2 text-xs text-slate-400">
+      <div class="flex items-start gap-2"><span class="text-slate-500 mt-0.5">①</span><span>Alta cliente: <a href="clientes.html" class="text-blue-400 hover:underline">Lista</a> → crear Madre → <a href="cliente-detalle.html" class="text-blue-400 hover:underline">Detalle</a> → añadir Hija</span></div>
+      <div class="flex items-start gap-2"><span class="text-slate-500 mt-0.5">②</span><span>Nuevo contrato: <a href="contrato-nuevo.html" class="text-blue-400 hover:underline">Wizard</a> · 4 pasos con asignación de licencias</span></div>
+      <div class="flex items-start gap-2"><span class="text-slate-500 mt-0.5">③</span><span>Descuentos: <a href="contrato-detalle.html" class="text-blue-400 hover:underline">Detalle contrato</a> · cascada línea + contrato con expiración</span></div>
+      <div class="flex items-start gap-2"><span class="text-slate-500 mt-0.5">④</span><span>Facturación mensual: <a href="facturacion.html" class="text-blue-400 hover:underline">Matriz</a> · clic en celda → drawer → marcar facturado</span></div>
+      <div class="flex items-start gap-2"><span class="text-slate-500 mt-0.5">⑤</span><span>Bloqueo facturación: celda "Agencia Alcázar / Abr" tiene variable sin importe → botón bloqueado</span></div>
+      <div class="flex items-start gap-2"><span class="text-slate-500 mt-0.5">⑥</span><span>Reemplazar contrato: <a href="contrato-detalle.html" class="text-blue-400 hover:underline">Detalle</a> → botón "Reemplazar" → modal explicativo</span></div>
+    </div>
+  </div>
+
+  <p class="text-center text-slate-600 text-xs mt-8">ACB Prototipo · Solo validación UX · Sin backend ni base de datos</p>
+</div>
+</body>
+</html>

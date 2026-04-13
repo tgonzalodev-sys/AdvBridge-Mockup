@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Facturación — ACB</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<style>
+  [x-cloak]{display:none!important}
+  .matrix-cell { min-width: 100px; }
+  .drawer-enter { animation: slideIn .2s ease-out; }
+  @keyframes slideIn { from { transform: translateX(100%); opacity:0; } to { transform: translateX(0); opacity:1; } }
+</style>
+</head>
+<body class="bg-gray-50 font-sans" x-data="facturacionApp()">
+
+<aside class="fixed inset-y-0 left-0 w-56 bg-slate-900 flex flex-col z-40">
+  <div class="px-5 py-5 border-b border-slate-700"><div class="text-white font-bold text-base">AdvertMind</div><div class="text-slate-400 text-xs mt-0.5">Commercial Bridge</div></div>
+  <nav class="flex-1 px-3 py-4 space-y-1">
+    <a href="clientes.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Clientes</a>
+    <a href="productos.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>Productos</a>
+    <a href="contratos.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Contratos</a>
+    <a href="facturacion.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-blue-600 text-white"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>Facturación</a>
+  </nav>
+  <div class="px-4 py-4 border-t border-slate-700"><div class="text-xs text-slate-500 mb-1">Subsidiaria activa</div><select class="w-full bg-slate-800 text-slate-200 text-xs border border-slate-700 rounded px-2 py-1.5"><option>Advertmind SA</option><option>EuroAdvertmind SL</option></select></div>
+</aside>
+
+<div class="ml-56 min-h-screen flex flex-col">
+  <!-- Top controls -->
+  <header class="bg-white border-b border-gray-200 px-6 py-3 sticky top-0 z-30">
+    <div class="flex items-center justify-between mb-2">
+      <h1 class="text-xl font-semibold text-gray-900">Facturación</h1>
+    </div>
+    <div class="flex items-center gap-3 flex-wrap">
+      <div class="flex items-center gap-1.5">
+        <button @click="year--" class="px-2 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50">‹</button>
+        <span class="text-sm font-semibold text-gray-900 w-12 text-center" x-text="year"></span>
+        <button @click="year++" class="px-2 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50">›</button>
+      </div>
+      <select class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <option>Advertmind SA</option><option>EuroAdvertmind SL</option>
+      </select>
+      <select class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <option value="">País: Todos</option><option>España</option><option>Argentina</option>
+      </select>
+      <select class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <option value="">Moneda: Todas</option><option>EUR</option><option>USD</option><option>ARS</option>
+      </select>
+      <select class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <option value="">Estado: Todos</option><option>Pendiente</option><option>Facturado</option>
+      </select>
+      <!-- Legend -->
+      <div class="ml-auto flex items-center gap-3 text-xs text-gray-500">
+        <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm bg-green-100 border border-green-300 inline-block"></span>Facturado</span>
+        <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm bg-amber-50 border border-amber-300 inline-block"></span>Aviso</span>
+        <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm bg-white border border-gray-200 inline-block"></span>Pendiente</span>
+        <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm bg-gray-100 border border-gray-200 inline-block"></span>Sin actividad</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Matrix -->
+  <div class="flex-1 overflow-auto">
+    <table class="border-collapse text-xs w-full">
+      <thead class="sticky top-0 z-20">
+        <tr class="bg-slate-800 text-white">
+          <th class="sticky left-0 z-30 bg-slate-800 text-left px-4 py-3 text-xs font-semibold min-w-48 border-r border-slate-700">Cliente Madre</th>
+          <template x-for="mes in meses" :key="mes.n">
+            <th class="matrix-cell text-center px-2 py-3 text-xs font-medium border-r border-slate-700 last:border-0"
+              :class="mes.n === mesActual ? 'bg-blue-700' : ''" x-text="mes.label"></th>
+          </template>
+        </tr>
+      </thead>
+      <tbody>
+        <template x-for="(cliente, ci) in clientes" :key="cliente.id">
+          <tr class="border-b border-gray-200 hover:bg-blue-50/20 group">
+            <!-- Sticky row header -->
+            <td class="sticky left-0 z-10 bg-white group-hover:bg-blue-50/30 border-r border-gray-200 px-4 py-2 min-w-48">
+              <div class="font-medium text-gray-900 text-xs" x-text="cliente.nombre"></div>
+              <div class="text-gray-400 text-xs" x-text="cliente.pais"></div>
+            </td>
+            <!-- Month cells -->
+            <template x-for="mes in meses" :key="mes.n">
+              <td class="matrix-cell border-r border-gray-100 last:border-0 p-0">
+                <template x-if="getCelda(cliente.id, mes.n)">
+                  <button
+                    @click="abrirDrawer(cliente, mes)"
+                    class="w-full h-full min-h-14 px-2 py-1.5 text-left transition-colors hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-inset"
+                    :class="getCeldaClase(cliente.id, mes.n)">
+                    <template x-if="getCelda(cliente.id, mes.n)">
+                      <div>
+                        <!-- Invoiced -->
+                        <template x-if="getCelda(cliente.id, mes.n).estado === 'facturado'">
+                          <div class="flex items-center justify-between">
+                            <span class="font-semibold text-green-800 text-xs" x-text="getCelda(cliente.id, mes.n).total"></span>
+                            <svg class="w-3 h-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                          </div>
+                        </template>
+                        <!-- Warning -->
+                        <template x-if="getCelda(cliente.id, mes.n).estado === 'aviso'">
+                          <div>
+                            <div class="flex items-center justify-between">
+                              <span class="font-semibold text-amber-800 text-xs" x-text="getCelda(cliente.id, mes.n).total"></span>
+                              <svg class="w-3 h-3 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+                            </div>
+                            <div class="text-amber-600 text-xs mt-0.5" x-text="getCelda(cliente.id, mes.n).aviso"></div>
+                          </div>
+                        </template>
+                        <!-- Pending -->
+                        <template x-if="getCelda(cliente.id, mes.n).estado === 'pendiente'">
+                          <div>
+                            <span class="font-semibold text-gray-700 text-xs" x-text="getCelda(cliente.id, mes.n).total"></span>
+                            <template x-if="getCelda(cliente.id, mes.n).multimoneda">
+                              <div class="text-gray-400 text-xs mt-0.5" x-text="getCelda(cliente.id, mes.n).detalle"></div>
+                            </template>
+                          </div>
+                        </template>
+                        <!-- Partial -->
+                        <template x-if="getCelda(cliente.id, mes.n).estado === 'parcial'">
+                          <div>
+                            <div class="flex items-center justify-between">
+                              <span class="font-semibold text-blue-700 text-xs" x-text="getCelda(cliente.id, mes.n).total"></span>
+                              <span class="text-blue-400 text-xs">~</span>
+                            </div>
+                            <div class="text-blue-500 text-xs mt-0.5">Parcialmente facturado</div>
+                          </div>
+                        </template>
+                      </div>
+                    </template>
+                  </button>
+                </template>
+                <template x-if="!getCelda(cliente.id, mes.n)">
+                  <div class="w-full min-h-14 bg-gray-50"></div>
+                </template>
+              </td>
+            </template>
+          </tr>
+        </template>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Drawer: Detalle mensual -->
+<div x-show="drawer" x-cloak class="fixed inset-0 z-50 flex justify-end">
+  <div class="absolute inset-0 bg-black/30" @click="drawer = false"></div>
+  <div class="relative bg-white w-full max-w-lg shadow-2xl flex flex-col drawer-enter" @click.stop>
+    <!-- Drawer header -->
+    <div class="px-6 py-4 border-b border-gray-200 flex items-start justify-between">
+      <div>
+        <div class="text-xs text-gray-500 mb-0.5" x-text="drawerData?.mesLabel + ' · ' + year"></div>
+        <div class="text-base font-semibold text-gray-900" x-text="drawerData?.cliente"></div>
+        <div class="flex items-center gap-2 mt-1">
+          <span class="text-xs px-2 py-0.5 rounded-full font-medium"
+            :class="{
+              'bg-green-50 text-green-700': drawerData?.estadoMes === 'facturado',
+              'bg-amber-50 text-amber-700': drawerData?.estadoMes === 'aviso',
+              'bg-blue-50 text-blue-600': drawerData?.estadoMes === 'parcial',
+              'bg-gray-100 text-gray-600': drawerData?.estadoMes === 'pendiente'
+            }"
+            x-text="{facturado:'Facturado', aviso:'Con avisos', parcial:'Parcialmente facturado', pendiente:'Pendiente'}[drawerData?.estadoMes]"></span>
+        </div>
+      </div>
+      <button @click="drawer = false" class="text-gray-400 hover:text-gray-600 mt-1">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <!-- Drawer body -->
+    <div class="flex-1 overflow-y-auto px-6 py-4">
+      <template x-for="(grupo, gi) in drawerData?.grupos || []" :key="gi">
+        <div class="mb-5">
+          <!-- Currency group header -->
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide" x-text="grupo.moneda"></span>
+            <span class="text-sm font-semibold text-gray-900" x-text="grupo.total"></span>
+          </div>
+
+          <div class="space-y-1.5">
+            <template x-for="(linea, li) in grupo.lineas" :key="li">
+              <div class="rounded-lg border p-3"
+                :class="{
+                  'border-gray-200 bg-white': linea.estado === 'pendiente',
+                  'border-green-200 bg-green-50': linea.estado === 'facturado',
+                  'border-amber-200 bg-amber-50': linea.estado === 'aviso',
+                  'border-gray-100 bg-gray-50': linea.estado === 'cancelado'
+                }">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                      <span class="text-sm font-medium text-gray-900" x-text="linea.concepto"></span>
+                      <span class="text-xs px-1.5 py-0.5 rounded text-gray-500"
+                        :class="{
+                          'bg-blue-50 text-blue-600': linea.tipo === 'fija',
+                          'bg-purple-50 text-purple-600': linea.tipo === 'variable',
+                          'bg-orange-50 text-orange-600': linea.tipo === 'manual',
+                          'bg-gray-100 text-gray-500': linea.tipo === 'cancelado'
+                        }"
+                        x-text="{fija:'Cuota fija', variable:'Variable', manual:'Manual', cancelado:'Cancelado'}[linea.tipo]"></span>
+                    </div>
+                    <template x-if="linea.tipo === 'variable' && linea.estado !== 'facturado'">
+                      <div class="mt-1.5 flex items-center gap-2">
+                        <span class="text-xs text-gray-500">Importe real:</span>
+                        <input type="number" :placeholder="linea.placeholder || 'Introducir…'" :value="linea.importe !== linea.placeholder ? linea.importe : null"
+                          class="w-24 border border-gray-300 rounded px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
+                          @input="linea.importeReal = $event.target.value">
+                        <span class="text-xs text-gray-400" x-text="grupo.moneda"></span>
+                      </div>
+                    </template>
+                    <template x-if="linea.aviso">
+                      <div class="mt-1 text-xs text-amber-600 flex items-center gap-1">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+                        <span x-text="linea.aviso"></span>
+                      </div>
+                    </template>
+                  </div>
+                  <div class="text-right flex-shrink-0">
+                    <div class="text-sm font-semibold"
+                      :class="{
+                        'text-gray-900': linea.estado === 'pendiente',
+                        'text-green-700': linea.estado === 'facturado',
+                        'text-amber-700': linea.estado === 'aviso',
+                        'text-gray-400 line-through': linea.estado === 'cancelado'
+                      }"
+                      x-text="linea.importe + ' ' + grupo.moneda"></div>
+                    <!-- Line actions -->
+                    <div class="flex items-center gap-1 mt-1 justify-end">
+                      <template x-if="linea.estado === 'pendiente' || linea.estado === 'aviso'">
+                        <button @click="marcarLineaFacturada(linea)" class="text-xs text-blue-600 hover:text-blue-800 hover:underline">Marcar facturado</button>
+                      </template>
+                      <template x-if="linea.estado === 'facturado'">
+                        <span class="text-xs text-green-600 flex items-center gap-0.5">
+                          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                          Facturado
+                        </span>
+                      </template>
+                      <template x-if="linea.estado === 'pendiente' && linea.tipo === 'manual'">
+                        <button @click="linea.estado = 'cancelado'" class="text-xs text-red-400 hover:text-red-600 ml-1">Cancelar</button>
+                      </template>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </template>
+
+      <!-- Add manual billable -->
+      <div class="border-t border-gray-200 pt-4 mt-2">
+        <button @click="showManual = true" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 border-2 border-dashed border-gray-300 rounded-lg text-sm text-gray-500 hover:border-blue-400 hover:text-blue-600 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          Añadir concepto manual
+        </button>
+      </div>
+    </div>
+
+    <!-- Drawer footer: Mark full month -->
+    <div class="border-t border-gray-200 px-6 py-4 bg-gray-50">
+      <!-- Blocked state -->
+      <template x-if="drawerData?.bloqueado">
+        <div class="mb-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+          <div class="text-xs font-semibold text-red-700 mb-1">No se puede marcar el mes como facturado</div>
+          <ul class="text-xs text-red-600 space-y-0.5">
+            <template x-for="b in drawerData?.bloqueos" :key="b">
+              <li class="flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg><span x-text="b"></span></li>
+            </template>
+          </ul>
+        </div>
+      </template>
+
+      <div class="flex items-center justify-between">
+        <div>
+          <div class="text-xs text-gray-500">Total del mes</div>
+          <div class="text-base font-bold text-gray-900 mt-0.5" x-text="drawerData?.totalMes"></div>
+        </div>
+        <button
+          @click="marcarMesFacturado()"
+          :disabled="drawerData?.bloqueado || drawerData?.estadoMes === 'facturado'"
+          class="px-5 py-2.5 text-sm font-medium rounded-lg transition-colors"
+          :class="{
+            'bg-green-600 hover:bg-green-700 text-white': !drawerData?.bloqueado && drawerData?.estadoMes !== 'facturado',
+            'bg-gray-200 text-gray-400 cursor-not-allowed': drawerData?.bloqueado,
+            'bg-green-100 text-green-700 cursor-default': drawerData?.estadoMes === 'facturado'
+          }">
+          <span x-text="drawerData?.estadoMes === 'facturado' ? '✓ Mes facturado' : 'Marcar mes como facturado'"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Añadir concepto manual -->
+<div x-show="showManual" x-cloak class="fixed inset-0 z-60 flex items-center justify-center">
+  <div class="absolute inset-0 bg-black/40" @click="showManual = false"></div>
+  <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6" @click.stop>
+    <div class="flex items-center justify-between mb-5">
+      <h2 class="text-lg font-semibold text-gray-900">Añadir concepto manual</h2>
+      <button @click="showManual = false" class="text-gray-400 hover:text-gray-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+    </div>
+    <div class="mb-3 p-3 bg-blue-50 rounded-lg text-xs text-blue-700">
+      Los conceptos manuales no necesitan estar vinculados a un contrato. Se añaden directamente al período de facturación.
+    </div>
+    <div class="space-y-3">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Descripción <span class="text-red-500">*</span></label>
+        <input type="text" placeholder="ej. Cargo bancario transferencia" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Importe <span class="text-red-500">*</span></label>
+          <input type="number" placeholder="0,00" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Moneda <span class="text-red-500">*</span></label>
+          <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option>EUR</option><option>USD</option><option>ARS</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Recurrencia</label>
+        <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option>Solo este mes (puntual)</option>
+          <option>Mensual (recurrente)</option>
+        </select>
+        <p class="text-xs text-gray-400 mt-1">Si es recurrente, el cambio de recurrencia solo afecta a períodos futuros.</p>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Contrato relacionado (opcional)</label>
+        <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="">Sin contrato</option>
+          <option>SkyOne Pro 2024</option>
+          <option>SkyOne Starter Valle</option>
+        </select>
+      </div>
+    </div>
+    <div class="mt-5 flex gap-3 justify-end">
+      <button @click="showManual = false" class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">Cancelar</button>
+      <button @click="showManual = false; showToast('Concepto manual añadido')" class="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700">Añadir concepto</button>
+    </div>
+  </div>
+</div>
+
+<div x-show="toast" x-cloak x-transition class="fixed bottom-6 right-6 bg-green-600 text-white px-5 py-3 rounded-xl shadow-lg text-sm font-medium z-50" x-text="toastMsg"></div>
+
+<script>
+function facturacionApp() {
+  const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  return {
+    year: 2025,
+    mesActual: 4, // Abril (1-indexed)
+    drawer: false,
+    drawerData: null,
+    showManual: false,
+    toast: false, toastMsg: '',
+
+    meses: MESES.map((l, i) => ({ n: i+1, label: l })),
+
+    clientes: [
+      { id: 1, nombre: 'Agencia Alcázar', pais: 'España' },
+      { id: 2, nombre: 'Publicidad Bernal', pais: 'Argentina' },
+      { id: 3, nombre: 'Agencia del Valle', pais: 'Colombia' },
+      { id: 4, nombre: 'Medios Córdoba', pais: 'España' },
+    ],
+
+    // key: "clienteId-mes"
+    celdas: {
+      '1-1': { estado:'facturado', total:'3.200 EUR', multimoneda:false },
+      '1-2': { estado:'facturado', total:'3.200 EUR', multimoneda:false },
+      '1-3': { estado:'facturado', total:'3.200 EUR', multimoneda:false },
+      '1-4': { estado:'aviso',     total:'3.200 EUR', aviso:'Variable sin importe' },
+      '1-5': { estado:'pendiente', total:'3.200 EUR', multimoneda:false },
+      '1-6': { estado:'pendiente', total:'3.200 EUR', multimoneda:false },
+      '1-7': { estado:'pendiente', total:'3.200 EUR', multimoneda:false },
+      '1-8': { estado:'pendiente', total:'3.200 EUR', multimoneda:false },
+      '1-9': { estado:'pendiente', total:'3.200 EUR', multimoneda:false },
+      '1-10':{ estado:'pendiente', total:'3.200 EUR', multimoneda:false },
+      '1-11':{ estado:'pendiente', total:'3.200 EUR', multimoneda:false },
+      '1-12':{ estado:'pendiente', total:'3.200 EUR', multimoneda:false },
+
+      '2-1': { estado:'facturado', total:'850 USD', multimoneda:false },
+      '2-2': { estado:'facturado', total:'850 USD', multimoneda:false },
+      '2-3': { estado:'parcial',   total:'850 USD', multimoneda:false },
+      '2-4': { estado:'pendiente', total:'850 USD', multimoneda:false },
+      '2-5': { estado:'pendiente', total:'850 USD', multimoneda:false },
+      '2-6': { estado:'pendiente', total:'850 USD', multimoneda:false },
+
+      '3-3': { estado:'facturado', total:'400 EUR', multimoneda:false },
+      '3-4': { estado:'pendiente', total:'400 EUR', multimoneda:false },
+      '3-5': { estado:'pendiente', total:'400 EUR', multimoneda:false },
+      '3-6': { estado:'pendiente', total:'400 EUR + 200 USD', multimoneda:true, detalle:'EUR + USD' },
+      '3-7': { estado:'pendiente', total:'400 EUR + 200 USD', multimoneda:true, detalle:'EUR + USD' },
+      '3-8': { estado:'pendiente', total:'400 EUR + 200 USD', multimoneda:true, detalle:'EUR + USD' },
+
+      '4-4': { estado:'aviso', total:'0 EUR', aviso:'Sin contrato activo' },
+    },
+
+    drawerDetalles: {
+      '1-4': {
+        estadoMes: 'aviso',
+        totalMes: '3.200,00 EUR',
+        bloqueado: true,
+        bloqueos: ['Importe variable de AdvertMind Analytics sin completar'],
+        grupos: [
+          { moneda:'EUR', total:'3.200,00 EUR', lineas: [
+            { concepto:'SkyOne Pro — Cuota fija', tipo:'fija', estado:'pendiente', importe:'2.400,00' },
+            { concepto:'AdvertMind Analytics — Cuota fija', tipo:'fija', estado:'pendiente', importe:'800,00' },
+            { concepto:'AdvertMind Analytics — Variable', tipo:'variable', estado:'aviso', importe:'0,00', placeholder:'Introducir importe real…', aviso:'Importe real pendiente de introducir' },
+          ]}
+        ]
+      },
+      '1-1': {
+        estadoMes: 'facturado',
+        totalMes: '3.200,00 EUR',
+        bloqueado: false,
+        bloqueos: [],
+        grupos: [
+          { moneda:'EUR', total:'3.200,00 EUR', lineas: [
+            { concepto:'SkyOne Pro — Cuota fija', tipo:'fija', estado:'facturado', importe:'2.400,00' },
+            { concepto:'AdvertMind Analytics — Cuota fija', tipo:'fija', estado:'facturado', importe:'800,00' },
+            { concepto:'AdvertMind Analytics — Variable', tipo:'variable', estado:'facturado', importe:'180,00' },
+          ]}
+        ]
+      },
+      '2-3': {
+        estadoMes: 'parcial',
+        totalMes: '850,00 USD',
+        bloqueado: false,
+        bloqueos: [],
+        grupos: [
+          { moneda:'USD', total:'850,00 USD', lineas: [
+            { concepto:'SkyOne Starter — Cuota fija', tipo:'fija', estado:'facturado', importe:'850,00' },
+            { concepto:'Cargo bancario transferencia', tipo:'manual', estado:'pendiente', importe:'15,00' },
+          ]}
+        ]
+      },
+      '3-6': {
+        estadoMes: 'pendiente',
+        totalMes: '400,00 EUR + 200,00 USD',
+        bloqueado: false,
+        bloqueos: [],
+        grupos: [
+          { moneda:'EUR', total:'400,00 EUR', lineas: [
+            { concepto:'SkyOne Starter — Cuota fija', tipo:'fija', estado:'pendiente', importe:'400,00' },
+          ]},
+          { moneda:'USD', total:'200,00 USD', lineas: [
+            { concepto:'Servicio de Onboarding', tipo:'manual', estado:'pendiente', importe:'200,00' },
+          ]}
+        ]
+      },
+    },
+
+    getCelda(cid, mes) {
+      return this.celdas[`${cid}-${mes}`] || null;
+    },
+
+    getCeldaClase(cid, mes) {
+      const c = this.celdas[`${cid}-${mes}`];
+      if (!c) return 'bg-gray-50';
+      return {
+        'facturado': 'bg-green-50 border border-green-200',
+        'aviso':     'bg-amber-50 border border-amber-200',
+        'pendiente': 'bg-white border border-gray-200',
+        'parcial':   'bg-blue-50 border border-blue-200',
+      }[c.estado] || 'bg-white';
+    },
+
+    abrirDrawer(cliente, mes) {
+      const key = `${cliente.id}-${mes.n}`;
+      const detalle = this.drawerDetalles[key] || {
+        estadoMes: this.celdas[key]?.estado || 'pendiente',
+        totalMes: this.celdas[key]?.total || '—',
+        bloqueado: false,
+        bloqueos: [],
+        grupos: [{ moneda:'EUR', total: this.celdas[key]?.total || '—', lineas:[
+          { concepto:'Cuota fija mensual', tipo:'fija', estado: this.celdas[key]?.estado === 'facturado' ? 'facturado' : 'pendiente', importe: this.celdas[key]?.total?.split(' ')[0] || '0,00' }
+        ]}]
+      };
+      this.drawerData = {
+        ...detalle,
+        cliente: cliente.nombre,
+        mesLabel: this.meses[mes.n - 1].label,
+        key
+      };
+      this.drawer = true;
+    },
+
+    marcarLineaFacturada(linea) {
+      linea.estado = 'facturado';
+    },
+
+    marcarMesFacturado() {
+      if (!this.drawerData || this.drawerData.bloqueado) return;
+      this.drawerData.estadoMes = 'facturado';
+      this.drawerData.grupos.forEach(g => g.lineas.forEach(l => { if (l.estado !== 'cancelado') l.estado = 'facturado'; }));
+      const key = this.drawerData.key;
+      if (this.celdas[key]) this.celdas[key].estado = 'facturado';
+      this.showToast('Mes marcado como facturado');
+    },
+
+    showToast(msg) { this.toastMsg = msg; this.toast = true; setTimeout(() => this.toast = false, 3000); }
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clientes — ACB</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="bg-gray-50 font-sans" x-data="clientesApp()">
+<div id="nav-host"></div>
+
+<div class="ml-56 min-h-screen">
+  <!-- Top bar -->
+  <header class="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between sticky top-0 z-30">
+    <div>
+      <h1 class="text-xl font-semibold text-gray-900">Clientes</h1>
+      <p class="text-sm text-gray-500 mt-0.5">Grupos, Madres e Hijas · Advertmind SA</p>
+    </div>
+    <button @click="showCrearMadre = true" class="inline-flex items-center gap-2 bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+      Nueva Madre
+    </button>
+  </header>
+
+  <main class="px-8 py-6">
+    <!-- Filters row -->
+    <div class="bg-white rounded-xl border border-gray-200 p-4 mb-5 flex flex-wrap gap-3 items-end">
+      <div class="flex-1 min-w-48">
+        <label class="block text-xs font-medium text-gray-600 mb-1">Buscar</label>
+        <input x-model="search" type="text" placeholder="Nombre, código, NIF…" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+      <div class="min-w-36">
+        <label class="block text-xs font-medium text-gray-600 mb-1">Subsidiaria</label>
+        <select x-model="filterSubs" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="">Todas</option>
+          <option>Advertmind SA</option>
+          <option>EuroAdvertmind SL</option>
+        </select>
+      </div>
+      <div class="min-w-32">
+        <label class="block text-xs font-medium text-gray-600 mb-1">País</label>
+        <select x-model="filterPais" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="">Todos</option>
+          <option>España</option>
+          <option>Argentina</option>
+          <option>México</option>
+        </select>
+      </div>
+      <div class="min-w-32">
+        <label class="block text-xs font-medium text-gray-600 mb-1">Estado</label>
+        <select x-model="filterStatus" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="">Todos</option>
+          <option>active</option>
+          <option>solo_consulta</option>
+          <option>inactive</option>
+        </select>
+      </div>
+      <div class="min-w-32">
+        <label class="block text-xs font-medium text-gray-600 mb-1">Grupo</label>
+        <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="">Todos</option>
+          <option>Grupo Éxito</option>
+          <option>Holding Norte</option>
+          <option>Grupo Sur</option>
+        </select>
+      </div>
+      <button class="text-sm text-gray-500 hover:text-gray-700 px-2 py-2">Limpiar</button>
+    </div>
+
+    <!-- Table -->
+    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-gray-200 bg-gray-50">
+            <th class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3 w-6"></th>
+            <th class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">Subsidiaria</th>
+            <th class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">Grupo</th>
+            <th class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">Madre</th>
+            <th class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">País</th>
+            <th class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">Estado</th>
+            <th class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">Cód. facturación</th>
+            <th class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">Hijas</th>
+            <th class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">Licencias</th>
+            <th class="px-4 py-3"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <template x-for="(m, idx) in filteredMadres()" :key="m.id">
+            <!-- Madre row -->
+            <tr class="border-b border-gray-100 hover:bg-gray-50 cursor-pointer" @click="toggle(m.id)">
+              <td class="px-4 py-3 text-center">
+                <svg x-show="m.hijas.length > 0" class="w-4 h-4 text-gray-400 inline transition-transform" :class="expanded.includes(m.id) ? 'rotate-90' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </td>
+              <td class="px-4 py-3">
+                <span class="text-xs font-medium px-2 py-0.5 rounded-full" :class="m.subsidiaria === 'Advertmind SA' ? 'bg-blue-50 text-blue-700' : 'bg-purple-50 text-purple-700'" x-text="m.subsidiaria === 'Advertmind SA' ? 'ADV SA' : 'EUR SL'"></span>
+              </td>
+              <td class="px-4 py-3 text-gray-500 text-xs" x-text="m.grupo || '—'"></td>
+              <td class="px-4 py-3 font-medium text-gray-900" x-text="m.nombre"></td>
+              <td class="px-4 py-3 text-gray-600" x-text="m.pais"></td>
+              <td class="px-4 py-3">
+                <span class="text-xs font-medium px-2 py-0.5 rounded-full"
+                  :class="{
+                    'bg-green-50 text-green-700': m.estado === 'active',
+                    'bg-amber-50 text-amber-700': m.estado === 'solo_consulta',
+                    'bg-gray-100 text-gray-500': m.estado === 'inactive'
+                  }"
+                  x-text="m.estado === 'active' ? 'Activa' : m.estado === 'solo_consulta' ? 'Solo consulta' : 'Inactiva'"></span>
+              </td>
+              <td class="px-4 py-3 font-mono text-xs text-gray-600" x-text="m.codigoFacturacion"></td>
+              <td class="px-4 py-3 text-gray-700" x-text="m.hijas.length"></td>
+              <td class="px-4 py-3 text-gray-700" x-text="m.licencias"></td>
+              <td class="px-4 py-3">
+                <a :href="'cliente-detalle.html?id=' + m.id" @click.stop class="text-blue-600 hover:text-blue-800 text-xs font-medium">Ver →</a>
+              </td>
+            </tr>
+            <!-- Hija rows (expanded) -->
+            <template x-if="expanded.includes(m.id)">
+              <template x-for="h in m.hijas" :key="h.id">
+                <tr class="border-b border-gray-100 bg-blue-50/30">
+                  <td class="px-4 py-2"></td>
+                  <td class="px-4 py-2"></td>
+                  <td class="px-4 py-2"></td>
+                  <td class="px-4 py-2 pl-8">
+                    <div class="flex items-center gap-2">
+                      <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+                      <span class="text-gray-700 text-sm" x-text="h.nombre"></span>
+                    </div>
+                  </td>
+                  <td class="px-4 py-2 text-gray-500 text-xs">Hereda</td>
+                  <td class="px-4 py-2">
+                    <span class="text-xs font-medium px-2 py-0.5 rounded-full"
+                      :class="{
+                        'bg-green-50 text-green-700': h.estado === 'active',
+                        'bg-amber-50 text-amber-700': h.estado === 'solo_consulta',
+                        'bg-gray-100 text-gray-500': h.estado === 'inactive'
+                      }"
+                      x-text="h.estado === 'active' ? 'Activa' : h.estado === 'solo_consulta' ? 'Solo consulta' : 'Inactiva'"></span>
+                  </td>
+                  <td class="px-4 py-2 font-mono text-xs text-gray-500" x-text="h.codigoIncidencia"></td>
+                  <td class="px-4 py-2"></td>
+                  <td class="px-4 py-2 text-gray-600 text-sm" x-text="h.licencias"></td>
+                  <td class="px-4 py-2"></td>
+                </tr>
+              </template>
+            </template>
+          </template>
+        </tbody>
+      </table>
+
+      <!-- Empty state -->
+      <div x-show="filteredMadres().length === 0" class="text-center py-16 text-gray-400">
+        <svg class="w-10 h-10 mx-auto mb-3 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        <p class="text-sm">No se encontraron clientes</p>
+      </div>
+
+      <!-- Footer -->
+      <div class="px-4 py-3 border-t border-gray-100 bg-gray-50 text-xs text-gray-500 flex items-center justify-between">
+        <span x-text="filteredMadres().length + ' madres'"></span>
+        <span>Subsidiaria: Advertmind SA</span>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal: Crear Madre -->
+<div x-show="showCrearMadre" x-cloak class="fixed inset-0 z-50 flex items-center justify-center">
+  <div class="absolute inset-0 bg-black/40" @click="showCrearMadre = false"></div>
+  <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 p-6" @click.stop>
+    <div class="flex items-center justify-between mb-5">
+      <h2 class="text-lg font-semibold text-gray-900">Nueva Cliente Madre</h2>
+      <button @click="showCrearMadre = false" class="text-gray-400 hover:text-gray-600">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre <span class="text-red-500">*</span></label>
+        <input type="text" placeholder="Nombre de la cliente madre" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Subsidiaria <span class="text-red-500">*</span></label>
+          <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option>Advertmind SA</option>
+            <option>EuroAdvertmind SL</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">País <span class="text-red-500">*</span></label>
+          <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option>España</option>
+            <option>Argentina</option>
+            <option>México</option>
+            <option>Colombia</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Grupo (opcional)</label>
+        <div class="flex gap-2">
+          <select class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">Sin grupo</option>
+            <option>Grupo Éxito</option>
+            <option>Holding Norte</option>
+          </select>
+          <button @click="showCrearGrupo = true" class="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-600 hover:bg-gray-50">+ Nuevo</button>
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Código de facturación AdvertMind <span class="text-red-500">*</span></label>
+        <input type="text" placeholder="ej. ADV-00123" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <p class="text-xs text-gray-400 mt-1">Debe ser único en todo el sistema</p>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+        <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option>active</option>
+          <option>solo_consulta</option>
+          <option>inactive</option>
+        </select>
+      </div>
+    </div>
+    <div class="mt-6 flex gap-3 justify-end">
+      <button @click="showCrearMadre = false" class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">Cancelar</button>
+      <button @click="crearMadre()" class="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700">Crear cliente madre</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Crear Grupo -->
+<div x-show="showCrearGrupo" x-cloak class="fixed inset-0 z-60 flex items-center justify-center">
+  <div class="absolute inset-0 bg-black/40" @click="showCrearGrupo = false"></div>
+  <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 p-6" @click.stop>
+    <h2 class="text-lg font-semibold text-gray-900 mb-4">Nuevo Grupo</h2>
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Nombre del grupo <span class="text-red-500">*</span></label>
+      <input type="text" placeholder="ej. Grupo Éxito" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+    </div>
+    <div class="mt-4 flex gap-3 justify-end">
+      <button @click="showCrearGrupo = false" class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">Cancelar</button>
+      <button @click="showCrearGrupo = false" class="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700">Crear grupo</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div x-show="toast" x-cloak x-transition class="fixed bottom-6 right-6 bg-green-600 text-white px-5 py-3 rounded-xl shadow-lg text-sm font-medium z-50" x-text="toastMsg"></div>
+
+<style>[x-cloak]{display:none!important}</style>
+<script>
+function clientesApp() {
+  return {
+    search: '',
+    filterSubs: '',
+    filterPais: '',
+    filterStatus: '',
+    expanded: [],
+    showCrearMadre: false,
+    showCrearGrupo: false,
+    toast: false,
+    toastMsg: '',
+    madres: [
+      { id: 1, nombre: 'Agencia Alcázar', subsidiaria: 'Advertmind SA', grupo: 'Grupo Éxito', pais: 'España', estado: 'active', codigoFacturacion: 'ADV-00101', licencias: 45, hijas: [
+        { id: 11, nombre: 'Alcázar Madrid', estado: 'active', codigoIncidencia: 'INC-00201', licencias: 25 },
+        { id: 12, nombre: 'Alcázar Barcelona', estado: 'active', codigoIncidencia: 'INC-00202', licencias: 20 },
+      ]},
+      { id: 2, nombre: 'Publicidad Bernal', subsidiaria: 'Advertmind SA', grupo: 'Holding Norte', pais: 'Argentina', estado: 'active', codigoFacturacion: 'ADV-00102', licencias: 12, hijas: [
+        { id: 21, nombre: 'Bernal Digital', estado: 'active', codigoIncidencia: 'INC-00211', licencias: 12 },
+      ]},
+      { id: 3, nombre: 'Medios Córdoba', subsidiaria: 'Advertmind SA', grupo: '', pais: 'España', estado: 'solo_consulta', codigoFacturacion: 'ADV-00103', licencias: 0, hijas: [] },
+      { id: 4, nombre: 'Grupo Creativo Norte', subsidiaria: 'EuroAdvertmind SL', grupo: 'Holding Norte', pais: 'España', estado: 'active', codigoFacturacion: 'EUR-00201', licencias: 30, hijas: [
+        { id: 41, nombre: 'Creativo Norte Madrid', estado: 'active', codigoIncidencia: 'INC-00301', licencias: 15 },
+        { id: 42, nombre: 'Creativo Norte BCN', estado: 'inactive', codigoIncidencia: 'INC-00302', licencias: 0 },
+        { id: 43, nombre: 'Creativo Norte Bilbao', estado: 'active', codigoIncidencia: 'INC-00303', licencias: 15 },
+      ]},
+      { id: 5, nombre: 'Soluciones Mendez', subsidiaria: 'Advertmind SA', grupo: 'Grupo Sur', pais: 'México', estado: 'inactive', codigoFacturacion: 'ADV-00105', licencias: 0, hijas: [] },
+      { id: 6, nombre: 'Agencia del Valle', subsidiaria: 'Advertmind SA', grupo: '', pais: 'Colombia', estado: 'active', codigoFacturacion: 'ADV-00106', licencias: 8, hijas: [
+        { id: 61, nombre: 'Valle Bogotá', estado: 'active', codigoIncidencia: 'INC-00401', licencias: 8 },
+      ]},
+    ],
+    filteredMadres() {
+      return this.madres.filter(m => {
+        const q = this.search.toLowerCase();
+        const matchSearch = !q || m.nombre.toLowerCase().includes(q) || m.codigoFacturacion.toLowerCase().includes(q) || (m.grupo && m.grupo.toLowerCase().includes(q)) || m.hijas.some(h => h.nombre.toLowerCase().includes(q) || h.codigoIncidencia.toLowerCase().includes(q));
+        const matchSubs = !this.filterSubs || m.subsidiaria === this.filterSubs;
+        const matchPais = !this.filterPais || m.pais === this.filterPais;
+        const matchStatus = !this.filterStatus || m.estado === this.filterStatus;
+        return matchSearch && matchSubs && matchPais && matchStatus;
+      });
+    },
+    toggle(id) {
+      if (this.expanded.includes(id)) this.expanded = this.expanded.filter(x => x !== id);
+      else this.expanded.push(id);
+    },
+    crearMadre() {
+      this.showCrearMadre = false;
+      this.toastMsg = 'Cliente madre creada correctamente';
+      this.toast = true;
+      setTimeout(() => this.toast = false, 3000);
+    }
+  }
+}
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const nav = document.createElement('div');
+  nav.id = 'nav-host';
+  // inline nav
+  document.getElementById('nav-host').innerHTML = `
+  <aside class="fixed inset-y-0 left-0 w-56 bg-slate-900 flex flex-col z-40">
+    <div class="px-5 py-5 border-b border-slate-700">
+      <div class="text-white font-bold text-base leading-tight">AdvertMind</div>
+      <div class="text-slate-400 text-xs mt-0.5">Commercial Bridge</div>
+    </div>
+    <nav class="flex-1 px-3 py-4 space-y-1">
+      <a href="clientes.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-blue-600 text-white">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        Clientes
+      </a>
+      <a href="productos.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+        Productos
+      </a>
+      <a href="contratos.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        Contratos
+      </a>
+      <a href="facturacion.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+        Facturación
+      </a>
+    </nav>
+    <div class="px-4 py-4 border-t border-slate-700">
+      <div class="text-xs text-slate-500 mb-1">Subsidiaria activa</div>
+      <select class="w-full bg-slate-800 text-slate-200 text-xs border border-slate-700 rounded px-2 py-1.5 focus:outline-none">
+        <option>Advertmind SA</option>
+        <option>EuroAdvertmind SL</option>
+      </select>
+    </div>
+  </aside>`;
+});
+</script>
+</body>
+</html>

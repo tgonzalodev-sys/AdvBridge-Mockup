@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nuevo Contrato — ACB</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="bg-gray-50 font-sans" x-data="nuevoContratoApp()">
+<aside class="fixed inset-y-0 left-0 w-56 bg-slate-900 flex flex-col z-40">
+  <div class="px-5 py-5 border-b border-slate-700"><div class="text-white font-bold text-base">AdvertMind</div><div class="text-slate-400 text-xs mt-0.5">Commercial Bridge</div></div>
+  <nav class="flex-1 px-3 py-4 space-y-1">
+    <a href="clientes.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Clientes</a>
+    <a href="productos.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>Productos</a>
+    <a href="contratos.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-blue-600 text-white"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Contratos</a>
+    <a href="facturacion.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>Facturación</a>
+  </nav>
+  <div class="px-4 py-4 border-t border-slate-700"><div class="text-xs text-slate-500 mb-1">Subsidiaria activa</div><select class="w-full bg-slate-800 text-slate-200 text-xs border border-slate-700 rounded px-2 py-1.5"><option>Advertmind SA</option><option>EuroAdvertmind SL</option></select></div>
+</aside>
+
+<div class="ml-56 min-h-screen">
+  <header class="bg-white border-b border-gray-200 px-8 py-4 sticky top-0 z-30">
+    <div class="flex items-center gap-2 text-sm text-gray-500 mb-1">
+      <a href="contratos.html" class="hover:text-blue-600">Contratos</a>
+      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      <span class="text-gray-900 font-medium">Nuevo contrato</span>
+    </div>
+    <h1 class="text-xl font-semibold text-gray-900">Nuevo Contrato</h1>
+  </header>
+
+  <main class="px-8 py-6 max-w-3xl">
+    <!-- Step indicator -->
+    <div class="flex items-center gap-0 mb-8">
+      <template x-for="(s, i) in steps" :key="i">
+        <div class="flex items-center">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-colors"
+              :class="{
+                'bg-blue-600 text-white': step === i+1,
+                'bg-green-500 text-white': step > i+1,
+                'bg-gray-200 text-gray-500': step < i+1
+              }">
+              <template x-if="step > i+1">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+              </template>
+              <template x-if="step <= i+1"><span x-text="i+1"></span></template>
+            </div>
+            <span class="text-sm font-medium" :class="step === i+1 ? 'text-gray-900' : 'text-gray-400'" x-text="s"></span>
+          </div>
+          <template x-if="i < steps.length - 1">
+            <div class="w-12 h-px mx-3" :class="step > i+1 ? 'bg-green-400' : 'bg-gray-200'"></div>
+          </template>
+        </div>
+      </template>
+    </div>
+
+    <!-- STEP 1: Cliente -->
+    <div x-show="step === 1" class="bg-white rounded-xl border border-gray-200 p-6">
+      <h2 class="text-base font-semibold text-gray-900 mb-1">Seleccionar Cliente Madre</h2>
+      <p class="text-sm text-gray-500 mb-5">El contrato se creará a nivel de Madre. La subsidiaria se hereda automáticamente.</p>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Cliente Madre <span class="text-red-500">*</span></label>
+          <select x-model="madreSeleccionada" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">Seleccionar cliente madre…</option>
+            <option>Agencia Alcázar</option>
+            <option>Publicidad Bernal</option>
+            <option>Medios Córdoba</option>
+            <option>Agencia del Valle</option>
+          </select>
+        </div>
+        <template x-if="madreSeleccionada">
+          <div class="p-3 bg-blue-50 rounded-lg text-sm">
+            <div class="font-medium text-blue-900" x-text="madreSeleccionada"></div>
+            <div class="text-blue-600 text-xs mt-0.5">Subsidiaria: Advertmind SA · Grupo: Grupo Éxito · 2 hijas</div>
+          </div>
+        </template>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">¿Este contrato reemplaza a uno anterior?</label>
+          <select x-model="reemplazaA" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">No (contrato nuevo)</option>
+            <option>SkyOne Pro Alcázar 2022</option>
+            <option>Analytics Bernal</option>
+          </select>
+          <template x-if="reemplazaA">
+            <p class="text-xs text-amber-600 mt-1">⚠ El contrato anterior quedará marcado como reemplazado y pasará al historial.</p>
+          </template>
+        </div>
+      </div>
+      <div class="mt-6 flex justify-end">
+        <button @click="step = 2" :disabled="!madreSeleccionada" class="px-5 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed">Siguiente →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Cabecera -->
+    <div x-show="step === 2" class="bg-white rounded-xl border border-gray-200 p-6">
+      <h2 class="text-base font-semibold text-gray-900 mb-1">Cabecera del contrato</h2>
+      <p class="text-sm text-gray-500 mb-5">Datos generales del contrato.</p>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Etiqueta del contrato <span class="text-red-500">*</span></label>
+          <input type="text" placeholder="ej. SkyOne Pro 2026" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <p class="text-xs text-gray-400 mt-1">Nombre interno para identificar este contrato.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de inicio <span class="text-red-500">*</span></label>
+            <input type="date" value="2026-01-01" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de fin</label>
+            <input type="date" value="2026-12-31" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <p class="text-xs text-gray-400 mt-1">Dejar vacío si es indefinido.</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <input type="checkbox" id="autoRenov" x-model="autoRenov" class="rounded">
+          <label for="autoRenov" class="text-sm text-gray-700">Auto-renovación</label>
+          <template x-if="autoRenov">
+            <span class="text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">Extenderá automáticamente el contrato al vencimiento</span>
+          </template>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Descuento a nivel de contrato</label>
+          <div class="flex gap-2">
+            <select x-model="tipoDescuento" class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="">Sin descuento</option>
+              <option value="pct">Porcentaje (%)</option>
+              <option value="fijo">Importe fijo</option>
+            </select>
+            <template x-if="tipoDescuento">
+              <input type="number" placeholder="0" class="w-28 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </template>
+            <template x-if="tipoDescuento === 'fijo'">
+              <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option>EUR</option><option>USD</option><option>ARS</option>
+              </select>
+            </template>
+          </div>
+          <template x-if="tipoDescuento === 'fijo'">
+            <p class="text-xs text-amber-600 mt-1">⚠ El descuento fijo solo está disponible si todas las líneas del contrato usan la misma moneda.</p>
+          </template>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Notas internas</label>
+          <textarea rows="2" placeholder="Observaciones generales…" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Observaciones de facturación</label>
+          <textarea rows="2" placeholder="Indicaciones especiales para el equipo de facturación…" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
+        </div>
+      </div>
+      <div class="mt-6 flex justify-between">
+        <button @click="step = 1" class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">← Anterior</button>
+        <button @click="step = 3" class="px-5 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700">Siguiente →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: Líneas de producto -->
+    <div x-show="step === 3" class="space-y-4">
+      <div class="bg-white rounded-xl border border-gray-200 p-6">
+        <div class="flex items-center justify-between mb-5">
+          <div>
+            <h2 class="text-base font-semibold text-gray-900">Líneas de producto</h2>
+            <p class="text-sm text-gray-500 mt-0.5">Cada línea representa un producto contratado.</p>
+          </div>
+          <button @click="addLinea()" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Añadir línea
+          </button>
+        </div>
+
+        <template x-if="lineas.length === 0">
+          <div class="text-center py-10 text-gray-400 border-2 border-dashed border-gray-200 rounded-xl">
+            <svg class="w-8 h-8 mx-auto mb-2 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <p class="text-sm">Añade al menos una línea de producto</p>
+          </div>
+        </template>
+
+        <div class="space-y-4">
+          <template x-for="(l, i) in lineas" :key="i">
+            <div class="border border-gray-200 rounded-xl p-4 bg-gray-50">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Línea <span x-text="i+1"></span></span>
+                <button @click="lineas.splice(i,1)" class="text-gray-400 hover:text-red-500 text-xs">Eliminar</button>
+              </div>
+              <div class="grid grid-cols-2 gap-3 mb-3">
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1">Producto <span class="text-red-500">*</span></label>
+                  <select x-model="l.producto" @change="onProductoChange(l)" class="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">Seleccionar…</option>
+                    <option>SkyOne Pro</option>
+                    <option>SkyOne Starter</option>
+                    <option>AdvertMind Analytics</option>
+                    <option>Briff Creator</option>
+                    <option>Servicio de Onboarding</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1">Versión</label>
+                  <select class="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500" :disabled="!l.producto || l.producto === 'AdvertMind Analytics' || l.producto === 'Servicio de Onboarding'">
+                    <option value="">— sin versión —</option>
+                    <option>v2.0</option><option selected>v3.0</option><option>v4.0</option>
+                  </select>
+                </div>
+              </div>
+              <div class="grid grid-cols-3 gap-3 mb-3">
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1">Moneda <span class="text-red-500">*</span></label>
+                  <select x-model="l.moneda" class="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option>EUR</option><option>USD</option><option>ARS</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1">Ámbito</label>
+                  <select x-model="l.ambito" class="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="madre">Solo Madre</option>
+                    <option value="madrehijas">Madre + Hijas</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1">Licencias</label>
+                  <input type="number" x-model="l.licencias" placeholder="0" class="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-3 mb-3">
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1">Cuota fija mensual</label>
+                  <input type="number" placeholder="0,00" class="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-gray-600 mb-1">Cuota inicial</label>
+                  <input type="number" placeholder="0,00" class="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+              </div>
+              <!-- Descuento de línea -->
+              <div class="border-t border-gray-200 pt-3 mt-1">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-medium text-gray-600">Descuento de línea</span>
+                  <button @click="l.showDescuento = !l.showDescuento" class="text-xs text-blue-600 hover:text-blue-800" x-text="l.showDescuento ? 'Quitar descuento' : '+ Añadir descuento'"></button>
+                </div>
+                <template x-if="l.showDescuento">
+                  <div class="flex gap-2 items-end">
+                    <div class="flex-1">
+                      <label class="block text-xs text-gray-500 mb-1">Tipo</label>
+                      <select class="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm bg-white focus:outline-none">
+                        <option>Porcentaje (%)</option><option>Importe fijo</option>
+                      </select>
+                    </div>
+                    <div class="w-24">
+                      <label class="block text-xs text-gray-500 mb-1">Valor</label>
+                      <input type="number" placeholder="0" class="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm bg-white focus:outline-none">
+                    </div>
+                    <div class="flex-1">
+                      <label class="block text-xs text-gray-500 mb-1">Fecha fin descuento</label>
+                      <input type="date" class="w-full border border-gray-300 rounded-lg px-3 py-1.5 text-sm bg-white focus:outline-none">
+                    </div>
+                  </div>
+                </template>
+              </div>
+              <!-- Asignación de licencias por hija -->
+              <template x-if="l.ambito === 'madrehijas' && l.licencias > 0">
+                <div class="border-t border-gray-200 pt-3 mt-2">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-medium text-gray-600">Asignación de licencias por Hija</span>
+                    <button @click="lineaParaLicencias = l; showLicencias = true" class="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                      Asignar licencias
+                    </button>
+                  </div>
+                  <div class="mt-2 text-xs text-amber-600 flex items-center gap-1.5">
+                    <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    Pendiente de asignar: <span x-text="l.licencias"></span> licencias
+                  </div>
+                </div>
+              </template>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <div class="flex justify-between">
+        <button @click="step = 2" class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg bg-white hover:bg-gray-50">← Anterior</button>
+        <button @click="step = 4" :disabled="lineas.length === 0" class="px-5 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed">Siguiente →</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: Revisión -->
+    <div x-show="step === 4" class="space-y-4">
+      <div class="bg-white rounded-xl border border-gray-200 p-6">
+        <h2 class="text-base font-semibold text-gray-900 mb-5">Revisión antes de guardar</h2>
+        <div class="space-y-4">
+          <div class="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg text-sm">
+            <div><span class="text-gray-500">Cliente Madre:</span> <span class="font-medium ml-1" x-text="madreSeleccionada || 'Agencia Alcázar'"></span></div>
+            <div><span class="text-gray-500">Subsidiaria:</span> <span class="font-medium ml-1">Advertmind SA</span></div>
+            <div><span class="text-gray-500">Etiqueta:</span> <span class="font-medium ml-1">SkyOne Pro 2026</span></div>
+            <div><span class="text-gray-500">Vigencia:</span> <span class="font-medium ml-1">01/01/2026 — 31/12/2026</span></div>
+            <div><span class="text-gray-500">Auto-renovación:</span> <span class="font-medium ml-1" x-text="autoRenov ? 'Sí' : 'No'"></span></div>
+            <div><span class="text-gray-500">Reemplaza a:</span> <span class="font-medium ml-1" x-text="reemplazaA || '—'"></span></div>
+          </div>
+
+          <div>
+            <div class="text-sm font-medium text-gray-700 mb-2">Líneas de producto (<span x-text="lineas.length || 1"></span>)</div>
+            <div class="border border-gray-200 rounded-lg overflow-hidden">
+              <table class="w-full text-sm">
+                <thead><tr class="bg-gray-50 border-b border-gray-200">
+                  <th class="text-left text-xs text-gray-500 px-4 py-2">Producto</th>
+                  <th class="text-left text-xs text-gray-500 px-4 py-2">Versión</th>
+                  <th class="text-left text-xs text-gray-500 px-4 py-2">Moneda</th>
+                  <th class="text-left text-xs text-gray-500 px-4 py-2">Cuota fija</th>
+                  <th class="text-left text-xs text-gray-500 px-4 py-2">Licencias</th>
+                </tr></thead>
+                <tbody>
+                  <tr class="border-b border-gray-100">
+                    <td class="px-4 py-2.5 font-medium">SkyOne Pro</td>
+                    <td class="px-4 py-2.5 text-gray-600">v3.0</td>
+                    <td class="px-4 py-2.5 text-gray-600">EUR</td>
+                    <td class="px-4 py-2.5 text-gray-600">2.400,00</td>
+                    <td class="px-4 py-2.5 text-gray-600">45</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Warnings -->
+          <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+            <div class="text-xs font-semibold text-amber-800 mb-1.5">Verificar antes de guardar</div>
+            <ul class="space-y-1 text-xs text-amber-700">
+              <li class="flex items-start gap-1.5"><span class="mt-0.5">⚠</span> La asignación de licencias por Hija está pendiente (45 sin asignar)</li>
+              <li class="flex items-start gap-1.5"><span class="mt-0.5">ℹ</span> Se generarán conceptos de facturación mensual a partir del 01/01/2026</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-between">
+        <button @click="step = 3" class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg bg-white hover:bg-gray-50">← Anterior</button>
+        <button @click="guardar()" class="px-6 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">Guardar contrato</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal: Asignación de licencias por Hija -->
+<div x-show="showLicencias" x-cloak class="fixed inset-0 z-50 flex items-center justify-center">
+  <div class="absolute inset-0 bg-black/40" @click="showLicencias = false"></div>
+  <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6" @click.stop>
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-semibold text-gray-900">Asignación de Licencias</h2>
+      <button @click="showLicencias = false" class="text-gray-400 hover:text-gray-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+    </div>
+    <p class="text-sm text-gray-500 mb-4">Distribuye las licencias entre las Hijas de <strong>Agencia Alcázar</strong>. El total debe coincidir exactamente.</p>
+
+    <!-- Contador de progreso -->
+    <div class="mb-4 p-3 rounded-lg" :class="licenciasRestantes === 0 ? 'bg-green-50 border border-green-200' : licenciasRestantes < 0 ? 'bg-red-50 border border-red-200' : 'bg-blue-50 border border-blue-200'">
+      <div class="flex justify-between text-sm font-medium">
+        <span :class="licenciasRestantes === 0 ? 'text-green-700' : licenciasRestantes < 0 ? 'text-red-700' : 'text-blue-700'">
+          <span x-text="licenciasRestantes === 0 ? '✓ Asignación completa' : licenciasRestantes < 0 ? '✗ Exceso de asignación' : 'Pendiente de asignar'"></span>
+        </span>
+        <span :class="licenciasRestantes === 0 ? 'text-green-700' : licenciasRestantes < 0 ? 'text-red-700' : 'text-blue-700'">
+          <span x-text="Math.abs(licenciasRestantes)"></span> lic. <span x-text="licenciasRestantes < 0 ? 'en exceso' : licenciasRestantes === 0 ? '' : 'sin asignar'"></span>
+        </span>
+      </div>
+      <div class="mt-2 h-2 bg-gray-200 rounded-full overflow-hidden">
+        <div class="h-full rounded-full transition-all" :class="licenciasRestantes < 0 ? 'bg-red-500' : 'bg-blue-500'" :style="'width:' + Math.min(100, (licenciasAsignadas / 45) * 100) + '%'"></div>
+      </div>
+      <div class="flex justify-between text-xs mt-1" :class="licenciasRestantes === 0 ? 'text-green-600' : 'text-blue-600'">
+        <span x-text="licenciasAsignadas + ' asignadas'"></span>
+        <span>45 total</span>
+      </div>
+    </div>
+
+    <div class="space-y-3">
+      <template x-for="h in hijasAsignacion" :key="h.id">
+        <div class="flex items-center gap-3">
+          <div class="flex-1">
+            <div class="text-sm font-medium text-gray-900" x-text="h.nombre"></div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button @click="h.lic = Math.max(0, h.lic - 1)" class="w-7 h-7 flex items-center justify-center border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-100">−</button>
+            <input type="number" x-model.number="h.lic" min="0" class="w-16 text-center border border-gray-300 rounded-lg py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button @click="h.lic++" class="w-7 h-7 flex items-center justify-center border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-100">+</button>
+          </div>
+        </div>
+      </template>
+    </div>
+    <div class="mt-5 flex gap-3 justify-end">
+      <button @click="showLicencias = false" class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">Cancelar</button>
+      <button @click="showLicencias = false" :disabled="licenciasRestantes !== 0" class="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed">
+        <span x-text="licenciasRestantes !== 0 ? 'Ajustar distribución' : 'Confirmar asignación'"></span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>[x-cloak]{display:none!important}</style>
+<script>
+function nuevoContratoApp() {
+  return {
+    step: 1,
+    steps: ['Cliente', 'Cabecera', 'Líneas', 'Revisión'],
+    madreSeleccionada: '',
+    reemplazaA: '',
+    autoRenov: false,
+    tipoDescuento: '',
+    lineas: [],
+    showLicencias: false,
+    lineaParaLicencias: null,
+    hijasAsignacion: [
+      { id: 11, nombre: 'Alcázar Madrid', lic: 0 },
+      { id: 12, nombre: 'Alcázar Barcelona', lic: 0 },
+    ],
+    get licenciasAsignadas() { return this.hijasAsignacion.reduce((s, h) => s + h.lic, 0); },
+    get licenciasRestantes() { return 45 - this.licenciasAsignadas; },
+    addLinea() {
+      this.lineas.push({ producto: '', moneda: 'EUR', ambito: 'madre', licencias: 0, showDescuento: false });
+    },
+    onProductoChange(l) { },
+    guardar() { window.location.href = 'contratos.html'; }
+  }
+}
+</script>
+</body>
+</html>

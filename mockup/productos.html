@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Productos — ACB</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body class="bg-gray-50 font-sans" x-data="productosApp()">
+<aside class="fixed inset-y-0 left-0 w-56 bg-slate-900 flex flex-col z-40">
+  <div class="px-5 py-5 border-b border-slate-700"><div class="text-white font-bold text-base">AdvertMind</div><div class="text-slate-400 text-xs mt-0.5">Commercial Bridge</div></div>
+  <nav class="flex-1 px-3 py-4 space-y-1">
+    <a href="clientes.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Clientes</a>
+    <a href="productos.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium bg-blue-600 text-white"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>Productos</a>
+    <a href="contratos.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Contratos</a>
+    <a href="facturacion.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>Facturación</a>
+  </nav>
+  <div class="px-4 py-4 border-t border-slate-700"><div class="text-xs text-slate-500 mb-1">Subsidiaria activa</div><select class="w-full bg-slate-800 text-slate-200 text-xs border border-slate-700 rounded px-2 py-1.5"><option>Advertmind SA</option><option>EuroAdvertmind SL</option></select></div>
+</aside>
+
+<div class="ml-56 min-h-screen">
+  <header class="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between sticky top-0 z-30">
+    <div>
+      <h1 class="text-xl font-semibold text-gray-900">Catálogo de Productos</h1>
+      <p class="text-sm text-gray-500 mt-0.5">Productos vendibles · Catálogo unificado</p>
+    </div>
+    <button @click="showNuevo = true" class="inline-flex items-center gap-2 bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-blue-700">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+      Nuevo producto
+    </button>
+  </header>
+
+  <main class="px-8 py-6">
+    <!-- Filters -->
+    <div class="bg-white rounded-xl border border-gray-200 p-4 mb-5 flex gap-3 items-end">
+      <div class="flex-1 min-w-48">
+        <label class="block text-xs font-medium text-gray-600 mb-1">Buscar</label>
+        <input x-model="search" type="text" placeholder="Nombre de producto…" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+      <div class="min-w-36">
+        <label class="block text-xs font-medium text-gray-600 mb-1">Categoría</label>
+        <select x-model="filterCat" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="">Todas</option>
+          <option>SkyOne</option><option>AdvertMind</option><option>Services</option><option>Briff</option>
+        </select>
+      </div>
+      <div class="min-w-44">
+        <label class="block text-xs font-medium text-gray-600 mb-1">Disponibilidad</label>
+        <select x-model="filterDisp" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="">Todos</option>
+          <option value="1">Disponible</option>
+          <option value="0">No disponible</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-gray-200 bg-gray-50">
+            <th class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-5 py-3">Producto</th>
+            <th class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">Categoría</th>
+            <th class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">Versiones</th>
+            <th class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">Componentes</th>
+            <th class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">Licencias</th>
+            <th class="text-center text-xs font-semibold text-gray-500 uppercase tracking-wide px-4 py-3">Disponible</th>
+            <th class="px-4 py-3"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <template x-for="p in filteredProductos()" :key="p.id">
+            <tr class="border-b border-gray-100 hover:bg-gray-50" :class="!p.disponible ? 'opacity-60' : ''">
+              <td class="px-5 py-3">
+                <div class="font-medium text-gray-900" x-text="p.nombre"></div>
+                <template x-if="p.enContratos">
+                  <div class="text-xs text-gray-400 mt-0.5">En uso en contratos</div>
+                </template>
+              </td>
+              <td class="px-4 py-3">
+                <span class="text-xs font-medium px-2 py-0.5 rounded-full"
+                  :class="{
+                    'bg-sky-50 text-sky-700': p.categoria === 'SkyOne',
+                    'bg-violet-50 text-violet-700': p.categoria === 'AdvertMind',
+                    'bg-orange-50 text-orange-700': p.categoria === 'Services',
+                    'bg-teal-50 text-teal-700': p.categoria === 'Briff'
+                  }" x-text="p.categoria"></span>
+              </td>
+              <td class="px-4 py-3 text-gray-600 text-xs">
+                <template x-if="p.versiones.length > 0">
+                  <span x-text="p.versiones.join(', ')"></span>
+                </template>
+                <template x-if="p.versiones.length === 0">
+                  <span class="text-gray-400">Sin versiones</span>
+                </template>
+              </td>
+              <td class="px-4 py-3">
+                <div class="flex flex-wrap gap-1">
+                  <template x-if="p.cuotaInicial"><span class="text-xs px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded">Inicial</span></template>
+                  <template x-if="p.cuotaFijaMensual"><span class="text-xs px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded">Fija</span></template>
+                  <template x-if="p.cuotaVariableMensual"><span class="text-xs px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded">Variable</span></template>
+                </div>
+              </td>
+              <td class="px-4 py-3 text-center">
+                <template x-if="p.usaLicencias">
+                  <svg class="w-4 h-4 text-green-500 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                </template>
+                <template x-if="!p.usaLicencias">
+                  <span class="text-gray-300">—</span>
+                </template>
+              </td>
+              <td class="px-4 py-3 text-center">
+                <!-- Toggle switch -->
+                <button @click="toggleDisponible(p)" class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none"
+                  :class="p.disponible ? 'bg-blue-600' : 'bg-gray-300'">
+                  <span class="inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform shadow-sm"
+                    :class="p.disponible ? 'translate-x-4.5' : 'translate-x-0.5'"
+                    :style="p.disponible ? 'transform: translateX(18px)' : 'transform: translateX(2px)'"></span>
+                </button>
+              </td>
+              <td class="px-4 py-3">
+                <button @click="productoEditando = p; showEditar = true" class="text-xs text-blue-600 hover:text-blue-800">Editar</button>
+              </td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+      <div class="px-5 py-3 border-t border-gray-100 bg-gray-50 text-xs text-gray-500" x-text="filteredProductos().length + ' productos'"></div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal: Nuevo producto -->
+<div x-show="showNuevo" x-cloak class="fixed inset-0 z-50 flex items-center justify-center">
+  <div class="absolute inset-0 bg-black/40" @click="showNuevo = false"></div>
+  <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 p-6 max-h-[90vh] overflow-y-auto" @click.stop>
+    <div class="flex items-center justify-between mb-5">
+      <h2 class="text-lg font-semibold text-gray-900">Nuevo Producto</h2>
+      <button @click="showNuevo = false" class="text-gray-400 hover:text-gray-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+    </div>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre <span class="text-red-500">*</span></label>
+        <input type="text" x-model="nuevoNombre" @input="checkSimilar()" placeholder="Nombre del producto" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <template x-if="similarWarn">
+          <p class="text-xs text-amber-600 mt-1">⚠ Existe un producto con nombre similar: "<span x-text="similarWarn"></span>"</p>
+        </template>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Categoría <span class="text-red-500">*</span></label>
+        <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="">Seleccionar…</option>
+          <option>SkyOne</option><option>AdvertMind</option><option>Services</option><option>Briff</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Componentes de tarificación</label>
+        <div class="space-y-2">
+          <label class="flex items-center gap-2 text-sm text-gray-700"><input type="checkbox" class="rounded"> Cuota inicial (hasInitialFee)</label>
+          <label class="flex items-center gap-2 text-sm text-gray-700"><input type="checkbox" class="rounded"> Cuota fija mensual (hasFixedMonthlyFee)</label>
+          <label class="flex items-center gap-2 text-sm text-gray-700"><input type="checkbox" class="rounded"> Cuota variable mensual (hasVariableMonthlyFee)</label>
+          <label class="flex items-center gap-2 text-sm text-gray-700"><input type="checkbox" class="rounded"> Usa licencias (usesLicenses)</label>
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Versiones (opcional)</label>
+        <div class="flex gap-2 mb-2">
+          <input x-model="nuevaVersion" type="text" placeholder="ej. v3.0" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <button @click="addVersion()" class="px-3 py-2 bg-gray-100 text-gray-700 text-sm rounded-lg hover:bg-gray-200">Añadir</button>
+        </div>
+        <div class="flex flex-wrap gap-1.5">
+          <template x-for="(v, i) in versionesNuevas" :key="i">
+            <span class="inline-flex items-center gap-1 text-xs px-2 py-1 bg-blue-50 text-blue-700 rounded-full">
+              <span x-text="v"></span>
+              <button @click="versionesNuevas.splice(i,1)" class="text-blue-400 hover:text-blue-600">×</button>
+            </span>
+          </template>
+        </div>
+        <p class="text-xs text-gray-400 mt-1">Si no hay versiones, el campo de versión no aparecerá en los contratos.</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <input type="checkbox" checked id="dispCheck" class="rounded">
+        <label for="dispCheck" class="text-sm text-gray-700">Disponible para nuevos contratos</label>
+      </div>
+    </div>
+    <div class="mt-6 flex gap-3 justify-end">
+      <button @click="showNuevo = false" class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">Cancelar</button>
+      <button @click="showNuevo = false; showToast('Producto creado correctamente')" class="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700">Crear producto</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Editar producto -->
+<div x-show="showEditar" x-cloak class="fixed inset-0 z-50 flex items-center justify-center">
+  <div class="absolute inset-0 bg-black/40" @click="showEditar = false"></div>
+  <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 p-6" @click.stop>
+    <div class="flex items-center justify-between mb-5">
+      <h2 class="text-lg font-semibold text-gray-900">Editar Producto</h2>
+      <button @click="showEditar = false" class="text-gray-400 hover:text-gray-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+    </div>
+    <template x-if="productoEditando?.enContratos">
+      <div class="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-700">
+        ⚠ Este producto está en uso en contratos. Solo se puede editar el nombre y la categoría.
+      </div>
+    </template>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre <span class="text-red-500">*</span></label>
+        <input type="text" :value="productoEditando?.nombre" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Categoría <span class="text-red-500">*</span></label>
+        <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option>SkyOne</option><option>AdvertMind</option><option>Services</option><option>Briff</option>
+        </select>
+      </div>
+      <template x-if="!productoEditando?.enContratos">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Componentes</label>
+          <div class="space-y-2">
+            <label class="flex items-center gap-2 text-sm text-gray-700"><input type="checkbox" :checked="productoEditando?.cuotaInicial" class="rounded"> Cuota inicial</label>
+            <label class="flex items-center gap-2 text-sm text-gray-700"><input type="checkbox" :checked="productoEditando?.cuotaFijaMensual" class="rounded"> Cuota fija mensual</label>
+            <label class="flex items-center gap-2 text-sm text-gray-700"><input type="checkbox" :checked="productoEditando?.cuotaVariableMensual" class="rounded"> Cuota variable mensual</label>
+            <label class="flex items-center gap-2 text-sm text-gray-700"><input type="checkbox" :checked="productoEditando?.usaLicencias" class="rounded"> Usa licencias</label>
+          </div>
+        </div>
+      </template>
+    </div>
+    <div class="mt-6 flex gap-3 justify-end">
+      <button @click="showEditar = false" class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">Cancelar</button>
+      <button @click="showEditar = false; showToast('Producto actualizado')" class="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div x-show="toast" x-cloak x-transition class="fixed bottom-6 right-6 bg-green-600 text-white px-5 py-3 rounded-xl shadow-lg text-sm font-medium z-50" x-text="toastMsg"></div>
+<style>[x-cloak]{display:none!important}</style>
+<script>
+function productosApp() {
+  return {
+    search: '', filterCat: '', filterDisp: '',
+    showNuevo: false, showEditar: false,
+    productoEditando: null,
+    nuevoNombre: '', similarWarn: '',
+    nuevaVersion: '', versionesNuevas: [],
+    toast: false, toastMsg: '',
+    productos: [
+      { id:1, nombre:'SkyOne Pro', categoria:'SkyOne', versiones:['v2.0','v3.0','v4.0'], cuotaInicial:true, cuotaFijaMensual:true, cuotaVariableMensual:false, usaLicencias:true, disponible:true, enContratos:true },
+      { id:2, nombre:'SkyOne Starter', categoria:'SkyOne', versiones:['v2.0','v3.0'], cuotaInicial:false, cuotaFijaMensual:true, cuotaVariableMensual:false, usaLicencias:true, disponible:true, enContratos:true },
+      { id:3, nombre:'AdvertMind Analytics', categoria:'AdvertMind', versiones:[], cuotaInicial:false, cuotaFijaMensual:true, cuotaVariableMensual:true, usaLicencias:false, disponible:true, enContratos:true },
+      { id:4, nombre:'Briff Creator', categoria:'Briff', versiones:['1.0','2.0'], cuotaInicial:true, cuotaFijaMensual:true, cuotaVariableMensual:false, usaLicencias:true, disponible:true, enContratos:false },
+      { id:5, nombre:'Servicio de Onboarding', categoria:'Services', versiones:[], cuotaInicial:false, cuotaFijaMensual:false, cuotaVariableMensual:false, usaLicencias:false, disponible:true, enContratos:false },
+      { id:6, nombre:'SkyOne Enterprise', categoria:'SkyOne', versiones:['v3.0','v4.0'], cuotaInicial:true, cuotaFijaMensual:true, cuotaVariableMensual:true, usaLicencias:true, disponible:false, enContratos:true },
+      { id:7, nombre:'Cargo bancario', categoria:'Services', versiones:[], cuotaInicial:false, cuotaFijaMensual:false, cuotaVariableMensual:false, usaLicencias:false, disponible:true, enContratos:false },
+    ],
+    filteredProductos() {
+      return this.productos.filter(p => {
+        const q = this.search.toLowerCase();
+        const ms = !q || p.nombre.toLowerCase().includes(q);
+        const mc = !this.filterCat || p.categoria === this.filterCat;
+        const md = this.filterDisp === '' || (this.filterDisp === '1' ? p.disponible : !p.disponible);
+        return ms && mc && md;
+      });
+    },
+    toggleDisponible(p) { p.disponible = !p.disponible; },
+    checkSimilar() {
+      const q = this.nuevoNombre.toLowerCase().trim();
+      if (q.length < 3) { this.similarWarn = ''; return; }
+      const found = this.productos.find(p => p.nombre.toLowerCase().includes(q) || q.includes(p.nombre.toLowerCase().substring(0,5)));
+      this.similarWarn = found ? found.nombre : '';
+    },
+    addVersion() {
+      if (this.nuevaVersion.trim()) { this.versionesNuevas.push(this.nuevaVersion.trim()); this.nuevaVersion = ''; }
+    },
+    showToast(msg) { this.toastMsg = msg; this.toast = true; setTimeout(() => this.toast = false, 3000); }
+  }
+}
+</script>
+</body>
+</html>

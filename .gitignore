@@ -1,0 +1,35 @@
+# Claude Code local config (machine-specific, not project files)
+.claude/
+
+# macOS system files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Future Next.js build output (for when real dev starts)
+node_modules/
+.next/
+out/
+dist/
+
+# Environment files (never commit secrets)
+.env
+.env.local
+.env.*.local
+
+# Database files (SQLite, for future real dev)
+*.db
+*.sqlite
+prisma/dev.db
+prisma/dev.db-journal
